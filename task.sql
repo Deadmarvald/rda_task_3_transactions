@@ -10,7 +10,7 @@ SET @NewOrderID = LAST_INSERT_ID();
 -- Start the transaction 
 START TRANSACTION; 
 
--- And some data should be created inside the transaction 
+-- And some data should be created inside the transaction
 INSERT INTO OrderItems (OrderID, ProductID, Count)
 VALUES (@NewOrderID, 1, 1);
 
@@ -18,4 +18,8 @@ UPDATE Products
 SET WarehouseAmount = WarehouseAmount - 1
 WHERE ID = 1;
 
-COMMIT; 
+IF ROW_COUNT() = 0 THEN
+    ROLLBACK;
+ELSE
+    COMMIT;
+END IF;
